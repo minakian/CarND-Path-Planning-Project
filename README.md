@@ -1,6 +1,29 @@
 # CarND-Path-Planning-Project
-Self-Driving Car Engineer Nanodegree Program
-   
+Self-Driving Car Engineer Nanodegree
+
+## Project Writeup
+
+### Objective
+
+Develop code to drive around a highway style track. The car should appear as if driving naturally, while obeying the rules outlined in the given "Goals" section below.
+
+### Rhuberic Points
+
+1. The car must drive at least 4.32 miles without incident - Thus far the car has been able to drive > 30 miles without incident during my testing.
+2. The car drives according to the speed limit - The speed limit is set at 50MPH so i have limited my car to drive at a 49.5 MPH target +/- 0.224 MPH
+3. Max Acceleration and Jerk are not Exceeded - To avoid these conditions, adjustments to speed and lane position are made in small increments.
+4. Car does not have collisions - To avoid collisions, when approaching a slow moving vehicle, if safe, the car will change lanes, if not safe the car will slow to match the speed of the vehicle in front of it.
+5. The car stays in its lane, except for the time between changing lanes - The car will only leave the lane it is driving in to pass a slower moving vehicle when safe to do so.
+6. The car is able to change lanes - See simulation, using splines and the method explained in the walkthrough, the car will smoothly transition lanes.
+
+### Path Planning Reflection
+
+The first step in the project is getting the car moving safely without jerk. We give the vehicle an initial velocity of 0 and will increment the velocity by 0.224mph with each "step" which will be explained later. This process is started by checking for a car in front of us (line 78). As long as there is no car in front of us, the speed of the car will be incremented until it reaches the target velocity, in this case, the speed limit minus a 0.5 MPH buffer (line 443). For every iteration, including the first, it there is another vehicle within 30m of the front of the vehicle, the car will check to see if there is space in either lane next to it (Starting at line 306) If there is an opening for the car to change lanes, the desired lane will be changed (line 333) with priority being given to the left lane. If there is no space for a lane change, the vehicle will slow to match the speed of the vehicle immediately in front of it. If the 2 vehicles are within 15m the speed will be reduced further in order to increase the spacing of the vehicles. (lined 283 - 294).
+
+Following that section we create the actual path plan (line 362). A majority of this was written following the walkthrough provided, and utilizes the spline method. The first point of the spline is taken from the previous path's end point (Line 372), if not available, a starting point will be derived from the cars current position, velocity, and heading (line 362). Once this starting point is established, we add an additional 3 points to the spline space in 30m increments. Once the spline has been established, we use this spline to derive to a total of 50 navigational points. These points are derived from the car's current velocity and additional points are adjusted to the target velocity if necessary (line 439). This cycle is repeated to maintain 50 navigational points.
+
+## Given Project Information
+
 ### Simulator.
 You can download the Term3 Simulator which contains the Path Planning Project from the [releases tab (https://github.com/udacity/self-driving-car-sim/releases).
 
@@ -38,13 +61,13 @@ Here is the data provided from the Simulator to the C++ Program
 #### Previous path data given to the Planner
 
 //Note: Return the previous list but with processed points removed, can be a nice tool to show how far along
-the path has processed since last time. 
+the path has processed since last time.
 
 ["previous_path_x"] The previous list of x points previously given to the simulator
 
 ["previous_path_y"] The previous list of y points previously given to the simulator
 
-#### Previous path's end s and d values 
+#### Previous path's end s and d values
 
 ["end_path_s"] The previous list's last point's frenet s value
 
@@ -52,7 +75,7 @@ the path has processed since last time.
 
 #### Sensor Fusion Data, a list of all other car's attributes on the same side of the road. (No Noise)
 
-["sensor_fusion"] A 2d vector of cars and then that car's [car's unique ID, car's x position in map coordinates, car's y position in map coordinates, car's x velocity in m/s, car's y velocity in m/s, car's s position in frenet coordinates, car's d position in frenet coordinates. 
+["sensor_fusion"] A 2d vector of cars and then that car's [car's unique ID, car's x position in map coordinates, car's y position in map coordinates, car's x velocity in m/s, car's y velocity in m/s, car's s position in frenet coordinates, car's d position in frenet coordinates.
 
 ## Details
 
@@ -82,7 +105,7 @@ A really helpful resource for doing this project and creating smooth trajectorie
   * Run either `install-mac.sh` or `install-ubuntu.sh`.
   * If you install from source, checkout to commit `e94b6e1`, i.e.
     ```
-    git clone https://github.com/uWebSockets/uWebSockets 
+    git clone https://github.com/uWebSockets/uWebSockets
     cd uWebSockets
     git checkout e94b6e1
     ```
